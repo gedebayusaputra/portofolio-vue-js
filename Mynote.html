@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>portofolio bayu</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+
+<body>
+     <!-- contact start -->
+     <section id="contact" class="pt-36 pb-32">
+        <div class="container" id="app">
+          <div class="w-full px-4">
+            <div class="max-w-xl mx-auto text-center mb-16">
+              <h4 class="font-semibold text-lg text-primary mb-2">MyNote</h4>
+              <h2
+                class="font-bold text-dark text-3xl mb-4 sm:text-4xl lg:text-5xl"
+              >
+                Let's Compute
+              </h2>
+              <p class="font-medium text-md text-secondary md:text-lg">
+                You can compute anything that you buy here
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-wrap">
+            <div class="w-full self-center px-4 lg:w-1/2">
+              <div class="w-full lg:w-2/3 lg:mx-auto">
+                <div class="w-full px-4 mb-8">
+                  <form v-on:submit.prevent="addNewP">
+                    <table border="1">
+                      <tr>
+                        <td for="name" class="text-base text-primary font-bold">
+                          Product :
+                        </td>
+                        <td>
+                          <input
+                            v-model="inputP.name"
+                            type="text"
+                            class="w-full bg-slate-200 text-dark p-3 rounded-md focus:outline-none focus:ring-primary focus:ring-1 focus:border-primary"
+                            id="name"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td for="name" class="text-base text-primary font-bold">
+                          Jumlah Barang :
+                        </td>
+                        <td>
+                          <input
+                            v-model="inputP.quan"
+                            type="number"
+                            class="w-full bg-slate-200 text-dark p-3 rounded-md focus:outline-none focus:ring-primary focus:ring-1 focus:border-primary"
+                            id="name"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td for="name" class="text-base text-primary font-bold">
+                          Harga :
+                        </td>
+                        <td>
+                          <input
+                            v-model="inputP.price"
+                            type="number"
+                            class="w-full bg-slate-200 text-dark p-3 rounded-md focus:outline-none focus:ring-primary focus:ring-1 focus:border-primary"
+                            id="name"
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                        <td for="name" class="text-base text-primary font-bold">
+                          Jenis :
+                        </td>
+                        <td>
+                          <select
+                            v-model="inputP.type"
+                            v-on:change="updateTypeID"
+                            type="text"
+                            class="w-full bg-slate-200 text-dark p-3 rounded-md focus:outline-none focus:ring-primary focus:ring-1 focus:border-primary"
+                            id="name"
+                          >
+                            <option value="" disabled>Select type</option>
+                            <option v-for="(item, index) in types" :key="item.id">
+                              {{item.type}}
+                            </option>
+                          </select>
+                        </td>
+                      </tr>
+                    </table>
+                    <div class="w-full px-4">
+                      <button
+                        class="mt-5 text-base font-semibold text-white bg-primary py-3 px-8 rounded-full w hover:opacity-80 hover:shadow-lg transition duration-500"
+                      >
+                        Masukan
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+  
+            <div class="w-full px-4 lg:w-1/2">
+              <table class="w-full">
+                <thead
+                  class="w-full text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600"
+                >
+                  <th>Product</th>
+                  <th>Type</th>
+                  <th>QTY</th>
+                  <th>Price</th>
+                  <th>Total</th>
+                </thead>
+                <tbody class="text-center">
+                  <tr v-for="(item, idex) in products" key="index">
+                    <td>{{item.name}}</td>
+                    <td>{{item.typeID}}</td>
+                    <td>{{item.quan}}</td>
+                    <td>Rp. {{item.price}}</td>
+                    <td>Rp. {{item.quan * item.price}}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="mt-5 font-semibold text-xl mt-4">
+                Total: Rp. {{ calculateTotal }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+  
+      <!-- contact end -->
+
+    <div id="app">
+
+    </div>
+
+    <script>
+        const app = Vue.createApp({
+          data() {
+            return {
+              inputP: {
+                name: "",
+                quan: "",
+                price: "",
+                type: "",
+              },
+              types: [
+                { id: 1, type: "1 (Software)" },
+                { id: 2, type: "2 (Hardware)" },
+              ],
+              products: [],
+              idProduct: 1,
+            };
+          },
+          computed: {
+            calculateTotal() {
+              return this.products.reduce((total, product) => {
+                return total + product.quan * product.price;
+              }, 0);
+            },
+          },
+          methods: {
+            addNewP() {
+              this.products.push({
+                idProduct: this.idProduct++,
+                name: this.inputP.name,
+                typeID: this.inputP.typeID,
+                price: this.inputP.price,
+                quan: this.inputP.quan,
+              });
+              console.log(this.products);
+            },
+            updateTypeID() {
+              const selectedType = this.types.find(
+                (item) => item.type === this.inputP.type
+              );
+              if (selectedType) {
+                this.inputP.typeID = selectedType.id.toString();
+              } else {
+                this.inputP.typeID = "";
+              }
+            },
+          },
+        });
+  
+        app.mount("#app");
+      </script>
+</body>
+
+</html>
